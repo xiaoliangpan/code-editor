@@ -1,5 +1,5 @@
 {
-  "name": "@byteplan/example",
+  "name": "@vilin/example",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@byteplan/bp-script-editor": "workspace:*",
+    "@vilin/code-editor": "workspace:*",
     "@codemirror/lang-javascript": "^6.1.4",
     "@codemirror/state": "^6.2.0",
     "@types/react-color": "^3.0.6",

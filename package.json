@@ -1,21 +1,22 @@
 {
-  "name": "bp-script-editor",
+  "name": "vilin-code-editor",
+  "private": true,
   "version": "1.0.0",
   "description": "在线公式脚本编辑器",
   "main": "index.js",
-  "homepage": "https://dbfu.github.io/bp-script-editor",
+  "homepage": "https://vilin.github.io/code-editor",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "pnpm --filter '@byteplan/bp-script-editor' run build",
+    "build": "pnpm --filter '@vilin/code-editor' run build",
     "build:example": "pnpm --filter '@byteplan/example' run build",
-    "dev": "pnpm --filter '@byteplan/example' run dev"
+    "dev": "pnpm --filter '@vilin/example' run dev"
   },
   "keywords": [
     "codemirror6",
     "script",
     "editor"
   ],
-  "author": "876809592@qq.com",
+  "author": "243506597@qq.com",
   "license": "ISC",
   "dependencies": {
     "@codemirror/autocomplete": "^6.4.2",

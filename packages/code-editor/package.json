@@ -1,12 +1,13 @@
 {
-  "name": "@byteplan/bp-script-editor",
+  "name": "@vilin/code-editor",
   "version": "0.0.8",
   "keywords": [
     "script",
-    "editor"
+    "editor",
+    "codemirror"
   ],
   "author": {
-    "name": "dbfu"
+    "name": "vilin"
   },
   "scripts": {
     "build": "rollup -c ./prod.rollup.config.js",
