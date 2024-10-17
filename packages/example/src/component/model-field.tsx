@@ -1,28 +1,24 @@
-import React, { FC, useContext, useMemo } from 'react';
-import { Tree } from 'antd';
+import React, { FC, useContext, useMemo } from "react";
+import { Tree } from "antd";
 
-import { GlobalContext } from '../context';
-import { Model } from '../data/model';
+import { GlobalContext } from "../context";
+import { Model } from "../data/model";
 
 interface PropsType {
   models: Model[];
   placeholderTypes: {
     [k: string]: string;
-  }
+  };
 }
 
-
-const ModelField: FC<PropsType> = ({
-  placeholderTypes,
-  models,
-}) => {
+const ModelField: FC<PropsType> = ({ placeholderTypes, models }) => {
   const { editorRef } = useContext(GlobalContext);
 
   const formatTree = (list: Model[], parent?: any): any[] => {
     return list.map((item: Model) => {
       const data: any = {
         title: item.name,
-        key: `${parent?.key || ''}${item.code}`,
+        key: `${parent?.key || ""}${item.code}`,
         parent,
         code: item.code,
       };
@@ -39,14 +35,16 @@ const ModelField: FC<PropsType> = ({
     <Tree
       defaultExpandAll
       onSelect={(_, info: any) => {
+        console.log("filed-insert0", editorRef?.current?.insertText, info);
         const text = `[[${placeholderTypes.Field}.${info.node.parent.title}:${info.node.parent.code}.${info.node.title}:${info.node.code}]] `;
         if (editorRef?.current?.insertText) {
+          console.log("insertText-filed", text);
           editorRef?.current?.insertText(text, false);
         }
       }}
       treeData={treeData}
     />
   );
-}
+};
 
 export default ModelField;

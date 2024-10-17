@@ -5,14 +5,20 @@ import React, {
   useCallback,
   ForwardRefRenderFunction,
   useMemo,
-} from 'react';
-import { githubLight } from '@uiw/codemirror-theme-github';
-import ReactCodeMirror, { ReactCodeMirrorRef } from '@uiw/react-codemirror';
-import { snippet } from '@codemirror/autocomplete';
-import { Extension } from '@codemirror/state';
+} from "react";
+import { githubLight } from "@uiw/codemirror-theme-github";
+import ReactCodeMirror, { ReactCodeMirrorRef } from "@uiw/react-codemirror";
+import { snippet } from "@codemirror/autocomplete";
+import { Extension } from "@codemirror/state";
 
-import { extensions } from './extensions';
-import { CompletionsType, FunctionType, HintPathType, PlaceholderThemesType, ScriptEditorRef } from './interface';
+import { extensions } from "./extensions";
+import {
+  CompletionsType,
+  FunctionType,
+  HintPathType,
+  PlaceholderThemesType,
+  ScriptEditorRef,
+} from "./interface";
 
 interface PropsType {
   completions: CompletionsType[];
@@ -28,24 +34,27 @@ interface PropsType {
   defaultValue?: string;
   hintPaths?: HintPathType[];
   extensions?: Extension[];
+  value?: string;
 }
 
-const Editor: ForwardRefRenderFunction<ScriptEditorRef, PropsType> = ({
-  completions,
-  onValueChange,
-  keywords,
-  placeholderThemes,
-  mode,
-  functions,
-  height,
-  width,
-  keywordsColor,
-  keywordsClassName,
-  defaultValue,
-  hintPaths,
-  extensions: extensionsProps,
-},
-  ref,
+const Editor: ForwardRefRenderFunction<ScriptEditorRef, PropsType> = (
+  {
+    completions,
+    onValueChange,
+    keywords,
+    placeholderThemes,
+    mode,
+    functions,
+    height,
+    width,
+    keywordsColor,
+    keywordsClassName,
+    defaultValue,
+    hintPaths,
+    extensions: extensionsProps,
+    value,
+  },
+  ref
 ) => {
   const editorRef = useRef<ReactCodeMirrorRef>(null);
 
@@ -81,7 +90,7 @@ const Editor: ForwardRefRenderFunction<ScriptEditorRef, PropsType> = ({
           insert: text,
         },
         selection: {
-          anchor: range.from + text.length
+          anchor: range.from + text.length,
         },
       });
     }
@@ -93,7 +102,7 @@ const Editor: ForwardRefRenderFunction<ScriptEditorRef, PropsType> = ({
       changes: {
         from: 0,
         to: view.state.doc.length,
-        insert: '',
+        insert: "",
       },
       selection: {
         anchor: 0,
@@ -130,22 +139,20 @@ const Editor: ForwardRefRenderFunction<ScriptEditorRef, PropsType> = ({
     [insertText, clearText, setText]
   );
 
-  console.log(extensionsProps);
   const extensionsMemo = useMemo(
-    () =>
-      [
-        ...extensions({
-          completions,
-          keywords,
-          placeholderThemes,
-          mode,
-          functions,
-          keywordsColor,
-          keywordsClassName,
-          hintPaths,
-        }),
-        ...(extensionsProps || [])
-      ],
+    () => [
+      ...extensions({
+        completions,
+        keywords,
+        placeholderThemes,
+        mode,
+        functions,
+        keywordsColor,
+        keywordsClassName,
+        hintPaths,
+      }),
+      ...(extensionsProps || []),
+    ],
     [
       completions,
       keywords,
@@ -173,11 +180,10 @@ const Editor: ForwardRefRenderFunction<ScriptEditorRef, PropsType> = ({
       extensions={extensionsMemo}
       theme={githubLight}
       onChange={onChangeHandle}
-      value={defaultValue}
+      value={value}
       ref={editorRef}
     />
   );
-}
-
+};
 
 export default forwardRef<ScriptEditorRef, PropsType>(Editor);

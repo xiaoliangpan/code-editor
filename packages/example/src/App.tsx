@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useRef } from "react";
+import { useState, useCallback, useMemo, useRef, useEffect } from "react";
 import { Button, Tabs, Space } from "antd";
 import { useLocalStorageState } from "ahooks";
 
@@ -32,7 +32,7 @@ const placeholderThemes = {
 };
 
 function App() {
-  const [value, setValue] = useState<string>("");
+  const [value, setValue] = useState<string>("// 这是代码编辑器");
   const [mode, setMode] = useState("name");
   const [modelListOpen, setModelListOpen] = useState(false);
   const [keywordsOpen, setKeywordsOpen] = useState(false);
@@ -40,7 +40,11 @@ function App() {
   const [runResultOpen, setRunResultOpen] = useState(false);
   const [formatFunctions, setFormatFunctions] = useState("");
   const [runResult, setRunResult] = useState("");
-
+  useEffect(() => {
+    setTimeout(() => {
+      setValue("aaa");
+    }, 3000);
+  }, []);
   const [localModels, setLocalModels] = useLocalStorageState<Model[]>(
     "model-list",
     { defaultValue: models }
@@ -231,14 +235,14 @@ function App() {
           <div className="flex-1 w-0">
             <Editor
               completions={completions}
-              keywords={keywordsConfig.keywords}
-              keywordsColor={keywordsConfig.color}
+              keywords={keywordsConfig?.keywords}
+              keywordsColor={keywordsConfig?.color}
               placeholderThemes={placeholderThemes}
-              functions={localFunctions}
+              functions={localFunctions || []}
               ref={editorRef}
               height="calc(100vh - 48px)"
               mode={mode}
-              defaultValue="// 输入user测试代码提示功能"
+              value={value}
               hintPaths={hintPaths}
               onValueChange={onValueChange}
             />
