@@ -6,7 +6,7 @@ import Editor, {
   CommonPlaceholderThemes,
   FunctionType,
   ScriptEditorRef,
-} from "@vilin/code-editor";
+} from "@vilin-lib/code-editor";
 
 import Function from "./component/function";
 import ModelField from "./component/model-field";

@@ -1,5 +1,5 @@
 {
-  "name": "@vilin/example",
+  "name": "@vilin-lib/example",
   "private": true,
   "version": "0.0.0",
   "type": "module",
