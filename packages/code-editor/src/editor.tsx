@@ -5,6 +5,7 @@ import React, {
   useCallback,
   ForwardRefRenderFunction,
   useMemo,
+  useEffect,
 } from "react";
 import { githubLight } from "@uiw/codemirror-theme-github";
 import ReactCodeMirror, { ReactCodeMirrorRef } from "@uiw/react-codemirror";
@@ -35,6 +36,9 @@ interface PropsType {
   hintPaths?: HintPathType[];
   extensions?: Extension[];
   value?: string;
+  placeholder?: string;
+  readonly?: boolean;
+  onFocusFunc?: (funcName: string) => void;
 }
 
 const Editor: ForwardRefRenderFunction<ScriptEditorRef, PropsType> = (
@@ -49,52 +53,64 @@ const Editor: ForwardRefRenderFunction<ScriptEditorRef, PropsType> = (
     width,
     keywordsColor,
     keywordsClassName,
-    defaultValue,
     hintPaths,
     extensions: extensionsProps,
     value,
+    placeholder = "请输入代码...",
+    readonly,
+    onFocusFunc,
   },
   ref
 ) => {
   const editorRef = useRef<ReactCodeMirrorRef>(null);
+  const functionsMapRef = useRef<Record<string, FunctionType>>({});
+  functionsMapRef.current = functions?.reduce((prev, cur) => {
+    const key = cur?.label;
+    prev[key] = cur;
+    return prev;
+  }, {});
 
-  const insertText = useCallback((text: string, isTemplate?: boolean) => {
-    const { view } = editorRef.current!;
-    if (!view) return;
+  const insertText = useCallback(
+    (text: string, isTemplate?: boolean) => {
+      const { view } = editorRef.current!;
+      if (!view) return;
+      if (readonly) return;
 
-    const { state } = view;
-    if (!state) return;
+      const { state } = view;
+      if (!state) return;
 
-    const [range] = state?.selection?.ranges || [];
+      const [range] = state?.selection?.ranges || [];
 
-    view.focus();
+      view.focus();
 
-    if (isTemplate) {
-      snippet(text)(
-        {
-          state,
-          dispatch: view.dispatch,
-        },
-        {
-          label: text,
-          detail: text,
-        },
-        range.from,
-        range.to
-      );
-    } else {
-      view.dispatch({
-        changes: {
-          from: range.from,
-          to: range.to,
-          insert: text,
-        },
-        selection: {
-          anchor: range.from + text.length,
-        },
-      });
-    }
-  }, []);
+      if (isTemplate) {
+        snippet(text)(
+          {
+            state,
+            dispatch: view.dispatch,
+          },
+          {
+            label: text,
+            detail: text,
+          },
+          range.from,
+          range.to
+        );
+      } else {
+        view.dispatch({
+          changes: {
+            from: range.from,
+            to: range.to,
+            insert: text,
+          },
+          selection: {
+            anchor: range.from + text.length,
+          },
+        });
+      }
+    },
+    [readonly]
+  );
 
   const clearText = useCallback(() => {
     const { view } = editorRef.current;
@@ -150,6 +166,9 @@ const Editor: ForwardRefRenderFunction<ScriptEditorRef, PropsType> = (
         keywordsColor,
         keywordsClassName,
         hintPaths,
+        readonly,
+        onFocusFunc,
+        functionsMap: functionsMapRef.current,
       }),
       ...(extensionsProps || []),
     ],
@@ -163,6 +182,8 @@ const Editor: ForwardRefRenderFunction<ScriptEditorRef, PropsType> = (
       keywordsClassName,
       hintPaths,
       extensionsProps,
+      onFocusFunc,
+      functionsMapRef.current,
     ]
   );
 
@@ -182,6 +203,8 @@ const Editor: ForwardRefRenderFunction<ScriptEditorRef, PropsType> = (
       onChange={onChangeHandle}
       value={value}
       ref={editorRef}
+      placeholder={!readonly && placeholder}
+      readOnly={readonly}
     />
   );
 };

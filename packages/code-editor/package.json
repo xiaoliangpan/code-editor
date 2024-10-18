@@ -1,5 +1,5 @@
 {
-  "name": "@vilin-lib/code-editor",
+  "name": "@panxl/code-editor",
   "version": "0.0.1",
   "keywords": [
     "script",
@@ -45,9 +45,11 @@
     "@codemirror/view": "^6.9.2",
     "@uiw/codemirror-theme-github": "^4.19.9",
     "@uiw/react-codemirror": "^4.19.9",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
     "rollup-plugin-clear": "^2.0.7"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "files": [
     "build"

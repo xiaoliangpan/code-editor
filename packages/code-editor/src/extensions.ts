@@ -1,13 +1,19 @@
-import { autocompletion } from '@codemirror/autocomplete';
-import { EditorView } from '@codemirror/view';
-import { CompletionsType, FunctionType, HintPathType, PlaceholderThemesType } from './interface';
+import { autocompletion } from "@codemirror/autocomplete";
+import { EditorView, highlightActiveLine, placeholder } from "@codemirror/view";
+import {
+  CompletionsType,
+  FunctionType,
+  HintPathType,
+  PlaceholderThemesType,
+} from "./interface";
 
-import { baseTheme } from './plugin/base-theme';
-import { customCompletions } from './plugin/custom-completions';
-import { functionPlugin } from './plugin/functions';
-import { keywordsPlugin } from './plugin/keywords';
-import { placeholdersPlugin } from './plugin/placeholders';
-import { hintPlugin } from './plugin/hint'
+import { baseTheme } from "./plugin/base-theme";
+import { customCompletions } from "./plugin/custom-completions";
+import { functionPlugin } from "./plugin/functions";
+import { keywordsPlugin } from "./plugin/keywords";
+import { placeholdersPlugin } from "./plugin/placeholders";
+import { hintPlugin } from "./plugin/hint";
+import { focusFunction } from "./plugin/focus-function";
 
 export const extensions = ({
   completions,
@@ -18,6 +24,8 @@ export const extensions = ({
   keywordsColor,
   keywordsClassName,
   hintPaths,
+  onFocusFunc,
+  functionsMap,
 }: {
   keywords?: string[];
   completions: CompletionsType[];
@@ -27,9 +35,21 @@ export const extensions = ({
   keywordsColor?: string;
   keywordsClassName?: string;
   hintPaths?: HintPathType[];
+  readonly?: boolean;
+  onFocusFunc?: (funcName: string) => void;
+  functionsMap: Record<string, FunctionType>;
 }): any[] => {
+  console.log("extensions");
   return [
-    keywords.length ? keywordsPlugin(keywords, keywordsColor, keywordsClassName) : null,
+    EditorView.domEventHandlers({
+      // 处理 mousedown 事件
+      mousedown: (event: MouseEvent, view: EditorView) => {
+        focusFunction(event, functionsMap, onFocusFunc);
+      },
+    }),
+    keywords.length
+      ? keywordsPlugin(keywords, keywordsColor, keywordsClassName)
+      : null,
     baseTheme,
     placeholdersPlugin(placeholderThemes, mode),
     EditorView.lineWrapping,
@@ -37,9 +57,9 @@ export const extensions = ({
       override: [
         customCompletions(completions),
         hintPaths?.length ? hintPlugin(hintPaths) : null,
-      ].filter(o => !!o)
+      ].filter((o) => !!o),
     }),
     functionPlugin(functions),
-  ].filter(o => !!o);
-}
-
+    highlightActiveLine(),
+  ].filter((o) => !!o);
+};

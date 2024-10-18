@@ -1,17 +1,19 @@
-import { ViewUpdate } from '@codemirror/view';
-import { DecorationSet } from '@codemirror/view';
+import { ViewUpdate } from "@codemirror/view";
+import { DecorationSet } from "@codemirror/view";
 import {
   Decoration,
   ViewPlugin,
   MatchDecorator,
   EditorView,
   WidgetType,
-} from '@codemirror/view';
+} from "@codemirror/view";
+import { cssConfig } from "../config";
+import { PlaceholderThemesType } from "../interface";
 
-import { PlaceholderThemesType } from '../interface';
-
-export const placeholdersPlugin = (themes: PlaceholderThemesType, mode: string = 'name') => {
-
+export const placeholdersPlugin = (
+  themes: PlaceholderThemesType,
+  mode: string = "name"
+) => {
   class PlaceholderWidget extends WidgetType {
     curFlag: string;
     text: string;
@@ -19,9 +21,11 @@ export const placeholdersPlugin = (themes: PlaceholderThemesType, mode: string =
     constructor(text: string) {
       super();
       if (text) {
-        const [curFlag, ...texts] = text.split('.');
+        const [curFlag, ...texts] = text.split(".");
         if (curFlag && texts.length) {
-          this.text = texts.map(t => t.split(':')[mode === 'code' ? 1 : 0]).join('.');
+          this.text = texts
+            .map((t) => t.split(":")[mode === "code" ? 1 : 0])
+            .join(".");
           this.curFlag = curFlag;
         }
       }
@@ -32,7 +36,7 @@ export const placeholdersPlugin = (themes: PlaceholderThemesType, mode: string =
     }
 
     toDOM() {
-      let elt = document.createElement('span');
+      let elt = document.createElement("span");
       if (!this.text) return elt;
 
       const { backgroudColor, borderColor, textColor } = themes[this.curFlag];
@@ -46,6 +50,7 @@ export const placeholdersPlugin = (themes: PlaceholderThemesType, mode: string =
       padding: 2px 7px;
       user-select: none;
       `;
+      elt.className = cssConfig?.placeholderClass;
       elt.textContent = this.text;
       return elt;
     }
@@ -56,6 +61,7 @@ export const placeholdersPlugin = (themes: PlaceholderThemesType, mode: string =
 
   const placeholderMatcher = new MatchDecorator({
     regexp: /\[\[(.+?)\]\]/g,
+
     decoration: (match) => {
       return Decoration.replace({
         widget: new PlaceholderWidget(match[1]),
@@ -86,8 +92,4 @@ export const placeholdersPlugin = (themes: PlaceholderThemesType, mode: string =
         }),
     }
   );
-}
-
-
-
-
+};

@@ -3,6 +3,7 @@ export interface CompletionsType {
   label: string;
   detail: string;
   type: string;
+  key: string;
 }
 
 export interface PlaceholderThemesType {
@@ -28,7 +29,7 @@ export interface ScriptEditorRef {
 export interface HintPathType {
   label: string;
   detail: string;
-  type: 'function' | 'keyword' | 'variable' | 'text' | 'property';
+  type: "function" | "keyword" | "variable" | "text" | "property";
   template: string;
   children?: HintPathType[];
 }
