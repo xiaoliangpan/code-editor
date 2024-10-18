@@ -1,5 +1,5 @@
-import React from 'react'
-import { ScriptEditorRef } from '@byteplan/bp-script-editor';
+import React from "react";
+import { ScriptEditorRef } from "@panxl/code-editor";
 
 export interface ContextType {
   editorRef: React.RefObject<ScriptEditorRef> | null;

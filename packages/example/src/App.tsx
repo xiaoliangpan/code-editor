@@ -6,7 +6,7 @@ import Editor, {
   CommonPlaceholderThemes,
   FunctionType,
   ScriptEditorRef,
-} from "@vilin-lib/code-editor";
+} from "@panxl/code-editor";
 
 import Function from "./component/function";
 import ModelField from "./component/model-field";
@@ -32,7 +32,7 @@ const placeholderThemes = {
 };
 
 function App() {
-  const [value, setValue] = useState<string>("// 这是代码编辑器");
+  const [value, setValue] = useState<string>();
   const [mode, setMode] = useState("name");
   const [modelListOpen, setModelListOpen] = useState(false);
   const [keywordsOpen, setKeywordsOpen] = useState(false);
@@ -40,11 +40,7 @@ function App() {
   const [runResultOpen, setRunResultOpen] = useState(false);
   const [formatFunctions, setFormatFunctions] = useState("");
   const [runResult, setRunResult] = useState("");
-  useEffect(() => {
-    setTimeout(() => {
-      setValue("aaa");
-    }, 3000);
-  }, []);
+
   const [localModels, setLocalModels] = useLocalStorageState<Model[]>(
     "model-list",
     { defaultValue: models }
@@ -104,6 +100,7 @@ function App() {
   }, []);
 
   const onValueChange = useCallback((value: string) => {
+    console.log("value", value);
     setValue(value);
   }, []);
 
@@ -122,13 +119,23 @@ function App() {
     });
 
     if (!result) return;
-    result = result.split("\n").pop() || "";
+    // result = result.split("\n").pop() || "";
+    console.log("pop", result);
     if (!result) return;
-
+    console.log("result---", result);
     console.log(`function: return ${result}`);
 
-    const func = new window.Function("func", "data", `return ${result}`);
-
+    // const func = new window.Function("func", "data", `return ${result}`);
+    const func = new window.Function(
+      "func",
+      "data",
+      `with(func,data,{
+      ...func,
+      ...data
+      }) {
+      return ${result}
+       }`
+    );
     const funcs = localFunctions.reduce((prev: { [k in string]: any }, cur) => {
       if (cur.handle) {
         const handle = new window.Function(`return ${cur.handle}`);
@@ -153,6 +160,54 @@ function App() {
     () => [...localFunctions, ...operations],
     [localFunctions, operations]
   );
+  const runScript = (
+    codeStr: string,
+    functions: { [k in string]: FunctionType },
+    data: Record<string, any>
+  ) => {
+    if (!codeStr) return;
+    // 解析变量  格式：[[f.用户:user.ID:id]] /\[\[(.+?)\]\]/g
+    let result = codeStr.replace(/\[\[(.+?)\]\]/g, (_: string, $2: string) => {
+      const [type, ...rest] = $2.split(".");
+
+      if (type === "f") {
+        //[[f.用户:user.ID:id]]
+        const [modelCode, fieldCode] = rest.map((t) => t.split(":")[1]);
+        return `data?.['${modelCode}']?.['${fieldCode}']`;
+      }
+
+      return "";
+    });
+
+    if (!result) return;
+    // 执行器
+    const funcRun = new window.Function(
+      "func",
+      "data",
+      `with(func,data,{
+      ...func,
+      ...data
+      }) {
+      return ${result}
+       }`
+    );
+    // 运行所有函数
+    const funcs = functions.reduce((prev: { [k in string]: any }, cur) => {
+      if (cur.handle) {
+        const handle = new window.Function(`return ${cur.handle}`);
+        prev[cur.label] = handle();
+      }
+
+      return prev;
+    }, {});
+    let runRes;
+    try {
+      runRes = funcRun(funcs, data);
+    } catch (e) {
+      console.log("代码运行时出错：", e);
+    }
+    return runRes;
+  };
 
   const editorRef = useRef<ScriptEditorRef>(null);
 
@@ -245,6 +300,10 @@ function App() {
               value={value}
               hintPaths={hintPaths}
               onValueChange={onValueChange}
+              placeholder="请输入代码"
+              onFocusFunc={(data) => {
+                console.log("onFocusFunc--", data);
+              }}
             />
           </div>
         </div>

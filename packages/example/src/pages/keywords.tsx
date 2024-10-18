@@ -1,6 +1,6 @@
-import { FC, useState, useRef, useEffect } from 'react'
-import { Modal, Tag, Input, InputRef } from 'antd'
-import { HexColorPicker } from 'react-colorful';
+import { FC, useState, useRef, useEffect } from "react";
+import { Modal, Tag, Input, InputRef } from "antd";
+import { HexColorPicker } from "react-colorful";
 
 export interface KeywordsConfigType {
   keywords: string[];
@@ -20,20 +20,19 @@ const Keywords: FC<PropsType> = ({
   keywordsConfig,
   onClose,
 }) => {
-
   const [color, setColor] = useState(keywordsConfig.color);
   const [inputVisible, setInputVisible] = useState(false);
   const inputRef = useRef<InputRef>(null);
   const [inputValue, setInputValue] = useState<string>();
-  const [localkeywords, setLocalkeywords] = useState(keywordsConfig.keywords)
+  const [localkeywords, setLocalkeywords] = useState(keywordsConfig.keywords);
 
   const onColorChange = (newColor: string) => {
     setColor(newColor);
-  }
+  };
 
   const handleClose = (removedTag: string) => {
     const newTags = localkeywords.filter((word) => word !== removedTag);
-    console.log(newTags);
+
     setLocalkeywords(newTags);
   };
 
@@ -43,10 +42,10 @@ const Keywords: FC<PropsType> = ({
 
   const handleInputConfirm = () => {
     if (inputValue && !localkeywords.includes(inputValue)) {
-      setLocalkeywords(prev => [...prev, inputValue]);
+      setLocalkeywords((prev) => [...prev, inputValue]);
     }
     setInputVisible(false);
-    setInputValue('');
+    setInputValue("");
   };
 
   useEffect(() => {
@@ -79,7 +78,7 @@ const Keywords: FC<PropsType> = ({
       <div className="flex mt-[24px]">
         <div className="mr-[10px]">关键字：</div>
         <div>
-          {localkeywords.map(item => (
+          {localkeywords.map((item) => (
             <Tag
               key={item}
               closable
@@ -91,32 +90,31 @@ const Keywords: FC<PropsType> = ({
               {item}
             </Tag>
           ))}
-          {
-            inputVisible ? (
-              <Input
-                ref={inputRef}
-                type="text"
-                size="small"
-                style={{ width: 78 }}
-                value={inputValue}
-                onChange={handleInputChange}
-                onBlur={handleInputConfirm}
-                onPressEnter={handleInputConfirm}
-              />) : (
-              <Tag
-                onClick={() => {
-                  setInputVisible(true);
-                }}
-                className="cursor-pointer"
-              >
-                + 添加
-              </Tag>
-            )
-          }
+          {inputVisible ? (
+            <Input
+              ref={inputRef}
+              type="text"
+              size="small"
+              style={{ width: 78 }}
+              value={inputValue}
+              onChange={handleInputChange}
+              onBlur={handleInputConfirm}
+              onPressEnter={handleInputConfirm}
+            />
+          ) : (
+            <Tag
+              onClick={() => {
+                setInputVisible(true);
+              }}
+              className="cursor-pointer"
+            >
+              + 添加
+            </Tag>
+          )}
         </div>
       </div>
     </Modal>
-  )
-}
+  );
+};
 
 export default Keywords;

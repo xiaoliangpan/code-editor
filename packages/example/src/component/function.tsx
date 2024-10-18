@@ -1,7 +1,7 @@
-import React, { useContext, FC } from 'react';
-import { Tooltip } from 'antd';
-import { GlobalContext } from '../context';
-import { FunctionType } from '@byteplan/bp-script-editor';
+import React, { useContext, FC } from "react";
+import { Tooltip } from "antd";
+import { GlobalContext } from "../context";
+import { FunctionType } from "@panxl/code-editor";
 
 interface PropsTypes {
   functions: FunctionType[];
@@ -28,6 +28,6 @@ const Function: FC<PropsTypes> = ({ functions }) => {
       ))}
     </div>
   );
-}
+};
 
 export default Function;

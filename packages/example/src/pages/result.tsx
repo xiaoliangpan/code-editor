@@ -1,5 +1,5 @@
-import { FC, useEffect } from 'react';
-import { Form, Modal, Input } from 'antd';
+import { FC, useEffect } from "react";
+import { Form, Modal, Input } from "antd";
 
 interface PropType {
   formatFunctions: string;
@@ -14,7 +14,6 @@ const RunResult: FC<PropType> = ({
   open,
   onClose,
 }) => {
-
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -23,7 +22,7 @@ const RunResult: FC<PropType> = ({
       form.setFieldsValue({
         formatFunctions,
         result,
-      })
+      });
     }
   }, [open]);
 
@@ -32,7 +31,9 @@ const RunResult: FC<PropType> = ({
       title="测试结果"
       open={open}
       footer={null}
-      onCancel={() => { onClose() }}
+      onCancel={() => {
+        onClose();
+      }}
       width={800}
     >
       <Form
@@ -41,22 +42,15 @@ const RunResult: FC<PropType> = ({
         labelCol={{ span: 5 }}
         name="result"
       >
-        <Form.Item
-          label="格式化后的函数"
-          name="formatFunctions"
-        >
+        <Form.Item label="格式化后的函数" name="formatFunctions">
           <Input.TextArea readOnly rows={5} />
         </Form.Item>
-        <Form.Item
-          label="运行结果"
-          name="result"
-        >
+        <Form.Item label="运行结果" name="result">
           <Input.TextArea readOnly rows={5} />
         </Form.Item>
       </Form>
-
     </Modal>
-  )
-}
+  );
+};
 
 export default RunResult;

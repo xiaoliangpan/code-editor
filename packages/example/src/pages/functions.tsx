@@ -1,6 +1,6 @@
-import { FC, useMemo, useState } from 'react'
-import { Button, Drawer, Form, Table, Modal, Input } from 'antd'
-import { FunctionType } from '@byteplan/bp-script-editor';
+import { FC, useMemo, useState } from "react";
+import { Button, Drawer, Form, Table, Modal, Input } from "antd";
+import { FunctionType } from "@panxl/code-editor";
 
 interface PropsType {
   open: boolean;
@@ -9,49 +9,48 @@ interface PropsType {
   onClose: any;
 }
 
-const Functions: FC<PropsType> = ({
-  open,
-  functions,
-  onChange,
-  onClose,
-}) => {
-
+const Functions: FC<PropsType> = ({ open, functions, onChange, onClose }) => {
   const [form] = Form.useForm();
   const [formOpen, setFormOpen] = useState(false);
 
   const columns = useMemo(() => {
-    return [{
-      dataIndex: 'label',
-      title: '名称',
-    }, {
-      dataIndex: 'template',
-      title: '模版',
-    }, {
-      dataIndex: 'detail',
-      title: '描述',
-    }, {
-      dataIndex: 'handle',
-      title: '实现',
-    }]
-  }, [])
+    return [
+      {
+        dataIndex: "label",
+        title: "名称",
+      },
+      {
+        dataIndex: "template",
+        title: "模版",
+      },
+      {
+        dataIndex: "detail",
+        title: "描述",
+      },
+      {
+        dataIndex: "handle",
+        title: "实现",
+      },
+    ];
+  }, []);
 
   const finish = (values: any) => {
     onChange([
       {
         ...values,
-        type: 'function',
+        type: "function",
       },
-      ...functions
+      ...functions,
     ]);
     setFormOpen(false);
-  }
+  };
 
   return (
     <Drawer
       title="定义函数"
       open={open}
       width={1200}
-      bodyStyle={{ maxHeight: 480, overflowY: 'auto' }}
+      bodyStyle={{ maxHeight: 480, overflowY: "auto" }}
       onClose={onClose}
     >
       <Button
@@ -59,7 +58,7 @@ const Functions: FC<PropsType> = ({
           setFormOpen(true);
         }}
         type="primary"
-        className='my-[12px]'
+        className="my-[12px]"
       >
         添加
       </Button>
@@ -77,7 +76,9 @@ const Functions: FC<PropsType> = ({
           setFormOpen(false);
         }}
         width={640}
-        onOk={() => { form.submit() }}
+        onOk={() => {
+          form.submit();
+        }}
       >
         <Form
           form={form}
@@ -85,34 +86,22 @@ const Functions: FC<PropsType> = ({
           labelCol={{ span: 5 }}
           onFinish={finish}
         >
-          <Form.Item
-            name="label"
-            label="名称"
-          >
+          <Form.Item name="label" label="名称">
             <Input />
           </Form.Item>
-          <Form.Item
-            name="template"
-            label="模版"
-          >
+          <Form.Item name="template" label="模版">
             <Input />
           </Form.Item>
-          <Form.Item
-            name="detail"
-            label="描述"
-          >
+          <Form.Item name="detail" label="描述">
             <Input />
           </Form.Item>
-          <Form.Item
-            name="handle"
-            label="实现"
-          >
+          <Form.Item name="handle" label="实现">
             <Input.TextArea rows={3} />
           </Form.Item>
         </Form>
       </Modal>
     </Drawer>
-  )
-}
+  );
+};
 
 export default Functions;

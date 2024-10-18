@@ -7,9 +7,9 @@
   "homepage": "https://vilin.github.io/code-editor",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "pnpm --filter '@vilin/code-editor' run build",
+    "build": "pnpm --filter '@panxl/code-editor' run build",
     "build:example": "pnpm --filter '@byteplan/example' run build",
-    "dev": "pnpm --filter '@vilin/example' run dev"
+    "dev": "pnpm --filter '@panxl/example' run dev"
   },
   "keywords": [
     "codemirror6",
