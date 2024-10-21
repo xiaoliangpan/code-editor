@@ -11,7 +11,7 @@ import { githubLight } from "@uiw/codemirror-theme-github";
 import ReactCodeMirror, { ReactCodeMirrorRef } from "@uiw/react-codemirror";
 import { snippet } from "@codemirror/autocomplete";
 import { Extension } from "@codemirror/state";
-
+import { deepClone, getFuncId } from "./utils";
 import { extensions } from "./extensions";
 import {
   CompletionsType,
@@ -19,6 +19,7 @@ import {
   HintPathType,
   PlaceholderThemesType,
   ScriptEditorRef,
+  CodeMode,
 } from "./interface";
 
 interface PropsType {
@@ -26,7 +27,7 @@ interface PropsType {
   keywords?: string[];
   onValueChange?: (value: string) => void;
   placeholderThemes: PlaceholderThemesType;
-  mode: string;
+  mode: CodeMode;
   functions: FunctionType[];
   height?: string;
   width?: string;
@@ -39,6 +40,8 @@ interface PropsType {
   placeholder?: string;
   readonly?: boolean;
   onFocusFunc?: (funcName: string) => void;
+  // 是否使用函数功能
+  isUseFun: boolean;
 }
 
 const Editor: ForwardRefRenderFunction<ScriptEditorRef, PropsType> = (
@@ -59,6 +62,7 @@ const Editor: ForwardRefRenderFunction<ScriptEditorRef, PropsType> = (
     placeholder = "请输入代码...",
     readonly,
     onFocusFunc,
+    isUseFun = true,
   },
   ref
 ) => {
@@ -80,8 +84,6 @@ const Editor: ForwardRefRenderFunction<ScriptEditorRef, PropsType> = (
       if (!state) return;
 
       const [range] = state?.selection?.ranges || [];
-
-      view.focus();
 
       if (isTemplate) {
         snippet(text)(
@@ -108,6 +110,7 @@ const Editor: ForwardRefRenderFunction<ScriptEditorRef, PropsType> = (
           },
         });
       }
+      view.focus();
     },
     [readonly]
   );
@@ -141,6 +144,39 @@ const Editor: ForwardRefRenderFunction<ScriptEditorRef, PropsType> = (
     });
     view.focus();
   }, []);
+  const getUsedFuncList = () => {
+    const { view } = editorRef.current;
+    if (!view) return;
+    const usedFuncList = [];
+    const currentValue = view?.state?.doc.toString() || "";
+    if (!currentValue) return;
+
+    const codeArr = deepClone(currentValue).split("\n");
+
+    if (Boolean(isUseFun) && functions.length > 0) {
+      const funcRegexp = new RegExp(
+        functions
+          .map((data: any) => {
+            return "\\b" + data.title + "\\b";
+          })
+          .join("|"),
+        "g"
+      );
+      for (let i = 0; i < currentValue.length; i++) {
+        const lineStr = codeArr[i];
+
+        let match: any;
+        while ((match = funcRegexp.exec(lineStr)) !== null) {
+          const variable = match[0];
+          if (lineStr[match["index"] + variable.length] === "(") {
+            const funcId = getFuncId(variable, functions);
+            funcId && usedFuncList.push(funcId);
+          }
+        }
+      }
+    }
+    return usedFuncList;
+  };
 
   useImperativeHandle(
     ref,
@@ -149,6 +185,7 @@ const Editor: ForwardRefRenderFunction<ScriptEditorRef, PropsType> = (
         insertText,
         clearText,
         setText,
+        getUsedFuncList,
         originEditorRef: editorRef,
       };
     },

@@ -8,6 +8,7 @@ import {
   WidgetType,
 } from "@codemirror/view";
 import { cssConfig } from "../config";
+import { varRegexp } from "../config/regexp";
 import { PlaceholderThemesType } from "../interface";
 
 export const placeholdersPlugin = (
@@ -21,6 +22,7 @@ export const placeholdersPlugin = (
     constructor(text: string) {
       super();
       if (text) {
+        // ${SYS.登录信息:LOGIN_INFO.地址:pAddr}
         const [curFlag, ...texts] = text.split(".");
         if (curFlag && texts.length) {
           this.text = texts
@@ -39,7 +41,13 @@ export const placeholdersPlugin = (
       let elt = document.createElement("span");
       if (!this.text) return elt;
 
-      const { backgroudColor, borderColor, textColor } = themes[this.curFlag];
+      const { backgroudColor, borderColor, textColor } = themes?.[
+        this?.curFlag || "f"
+      ] || {
+        backgroudColor: "#f5f5f5",
+        borderColor: "#e0e0e0",
+        textColor: "red",
+      };
       elt.style.cssText = `
       border: 1px solid ${borderColor};
       border-radius: 4px;
@@ -60,8 +68,8 @@ export const placeholdersPlugin = (
   }
 
   const placeholderMatcher = new MatchDecorator({
-    regexp: /\[\[(.+?)\]\]/g,
-
+    // regexp: /\[\[(.+?)\]\]/g,
+    regexp: varRegexp,
     decoration: (match) => {
       return Decoration.replace({
         widget: new PlaceholderWidget(match[1]),

@@ -39,7 +39,6 @@ export const extensions = ({
   onFocusFunc?: (funcName: string) => void;
   functionsMap: Record<string, FunctionType>;
 }): any[] => {
-  console.log("extensions");
   return [
     EditorView.domEventHandlers({
       // 处理 mousedown 事件

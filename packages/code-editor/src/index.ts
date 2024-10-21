@@ -1,5 +1,5 @@
-export { default } from './editor'
-export { CommonPlaceholderThemes } from './common-placeholder-theme'
+export { default } from "./editor";
+export { CommonPlaceholderThemes } from "./common-placeholder-theme";
 export {
   FunctionType,
   CommonPlaceholderTheme,
@@ -7,6 +7,5 @@ export {
   ScriptEditorRef,
   PlaceholderThemesType,
   HintPathType,
-} from './interface'
-
-
+  CodeMode,
+} from "./interface";

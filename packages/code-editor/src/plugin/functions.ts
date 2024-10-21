@@ -4,6 +4,7 @@ import { EditorView, WidgetType } from "@codemirror/view";
 import { Decoration, ViewPlugin, MatchDecorator } from "@codemirror/view";
 import { FunctionType } from "../interface";
 import { cssConfig } from "../config";
+import { funRegexp } from "../config/regexp";
 
 export const functionPlugin = (functions: FunctionType[]) => {
   class FunctionWidget extends WidgetType {
@@ -42,7 +43,7 @@ export const functionPlugin = (functions: FunctionType[]) => {
   }
 
   const functionMatcher = new MatchDecorator({
-    regexp: /(func\.)?(\w+?)\(/g,
+    regexp: funRegexp,
     decoration: (match) => {
       const funcName = match[2];
       if (functions.some((o) => o.label === funcName)) {

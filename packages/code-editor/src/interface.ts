@@ -24,6 +24,7 @@ export interface ScriptEditorRef {
   insertText?: (text: string, isTemplate: boolean) => void;
   clearText?: () => void;
   setText?: (text: string) => void;
+  getUsedFuncList?: () => FunctionType[];
 }
 
 export interface HintPathType {
@@ -32,4 +33,9 @@ export interface HintPathType {
   type: "function" | "keyword" | "variable" | "text" | "property";
   template: string;
   children?: HintPathType[];
+}
+
+export enum CodeMode {
+  NAME = "name",
+  CODE = "code",
 }
