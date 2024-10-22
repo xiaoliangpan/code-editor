@@ -23,6 +23,7 @@ export const placeholdersPlugin = (
       super();
       if (text) {
         // ${SYS.登录信息:LOGIN_INFO.地址:pAddr}
+
         const [curFlag, ...texts] = text.split(".");
         if (curFlag && texts.length) {
           this.text = texts
