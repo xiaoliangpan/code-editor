@@ -186,6 +186,7 @@ const Editor: ForwardRefRenderFunction<ScriptEditorRef, PropsType> = (
         clearText,
         setText,
         getUsedFuncList,
+
         originEditorRef: editorRef,
       };
     },
