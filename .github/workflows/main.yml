@@ -17,7 +17,7 @@ jobs:
       - name: 设置Node.js
         uses: actions/setup-node@master
         with:
-          node-version: 14
+          node-version: 18
           registry-url: https://registry.npmjs.org/ # 如果不配置将影响publish
 
       - name: 安装pnpm
