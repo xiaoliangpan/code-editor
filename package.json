@@ -8,8 +8,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "pnpm --filter '@panxl/code-editor' run build",
-    "build:example": "pnpm --filter '@panxl/example' run build",
-    "build:example1": "pnpm --filter '@panxl/example1' run build",
+    "build1:example": "pnpm --filter '@panxl/example' run build",
+    "build1:example1": "pnpm --filter '@panxl/example1' run build",
     "dev": "pnpm --filter '@panxl/example' run dev",
     "dev1": "pnpm --filter '@panxl/example1' run dev"
   },
