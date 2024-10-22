@@ -38,7 +38,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
         run: |
-          pnpm publish
+          pnpm publish packages/code-editor
 
       - name: publish 成功通知
         run: echo npm 推送成功，请访问 https://jackysoft.github.io/rocket-render-doc
