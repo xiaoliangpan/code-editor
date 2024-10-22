@@ -1,4 +1,6 @@
-import { EditorView } from "@uiw/react-codemirror";
+import { EditorView, ReactCodeMirrorRef } from "@uiw/react-codemirror";
+import { MutableRefObject } from "react";
+
 export interface CompletionsType {
   template: string;
   label: string;
@@ -26,7 +28,7 @@ export interface ScriptEditorRef {
   clearText?: () => void;
   setText?: (text: string) => void;
   getUsedFuncList?: () => FunctionType[];
-  originEditorRef?: EditorView;
+  originEditorRef?: MutableRefObject<ReactCodeMirrorRef>;
 }
 
 export interface HintPathType {
