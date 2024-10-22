@@ -28,7 +28,12 @@ jobs:
 
       - name: 构建packages
         run: pnpm run build
-
+      - name: 提交未提交的更改
+        run: |
+          git config --global user.email "panxlmail@qq.com"  # 设置你的GitHub邮箱
+          git config --global user.name "panxiaoliang"            # 设置你的GitHub用户名
+          git add .
+          git commit -m "Auto-commit before publishing" || echo "No changes to commit"
       - name: 发布NPM包
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
