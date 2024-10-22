@@ -8,6 +8,7 @@ import Editor, {
   ScriptEditorRef,
   CodeMode,
 } from "@panxl/code-editor";
+import type {} from "@panxl/code-editor";
 
 import Function from "./component/function";
 import ModelField from "./component/model-field";
@@ -22,6 +23,7 @@ import Keywords, { KeywordsConfigType } from "./pages/keywords";
 import Functions from "./pages/functions";
 import RunResult from "./pages/result";
 import { hintPaths } from "./data/hint";
+import { useCodeEditor } from "./hooks/use-code-editor";
 
 const placeholderTypes = {
   // 这里各种变量类型
@@ -33,33 +35,44 @@ const placeholderThemes = {
 };
 
 function App() {
-  const [value, setValue] = useState<string>();
-  const [mode, setMode] = useState<CodeMode>(CodeMode.NAME);
+  // const [value, setValue] = useState<string>();
+  // const [mode, setMode] = useState<CodeMode>(CodeMode.NAME);
   const [modelListOpen, setModelListOpen] = useState(false);
   const [keywordsOpen, setKeywordsOpen] = useState(false);
   const [functionsOpen, setFunctionsOpen] = useState(false);
   const [runResultOpen, setRunResultOpen] = useState(false);
   const [formatFunctions, setFormatFunctions] = useState("");
   const [runResult, setRunResult] = useState("");
-
+  const {
+    completions,
+    keywordsConfig,
+    placeholderThemes,
+    functions,
+    editorRef,
+    height,
+    mode,
+    value,
+    hintPaths,
+    onValueChange,
+    placeholder,
+    onFocusFunc,
+    insertFun,
+    insertVar,
+    changeMode,
+    setKeywordsConfig,
+  } = useCodeEditor({});
   const [localModels, setLocalModels] = useLocalStorageState<Model[]>(
     "model-list",
     { defaultValue: models }
   );
-
-  const [keywordsConfig, setKeywordsConfig] =
-    useLocalStorageState<KeywordsConfigType>("keywords-config", {
-      defaultValue: {
-        color: "red",
-        keywords: [],
-      },
-    });
-
-  const [localFunctions, setLocalFunctions] = useLocalStorageState<
-    FunctionType[]
-  >("functions", {
-    defaultValue: functions,
-  });
+  const localFunctions = functions;
+  // const [keywordsConfig, setKeywordsConfig] =
+  //   useLocalStorageState<KeywordsConfigType>("keywords-config", {
+  //     defaultValue: {
+  //       color: "red",
+  //       keywords: [],
+  //     },
+  //   });
 
   const tabs = useMemo(
     () => [
@@ -76,7 +89,7 @@ function App() {
       {
         key: "function",
         label: "函数",
-        children: <Function functions={localFunctions || []} />,
+        children: <Function functions={functions || []} />,
       },
       {
         key: "operation",
@@ -88,7 +101,7 @@ function App() {
   );
 
   const data = useMemo(() => {
-    return localModels.reduce((prevModel: any, model: Model) => {
+    const data = localModels.reduce((prevModel: any, model: Model) => {
       prevModel[model.code] = model.children?.reduce(
         (prevField: any, field: Model) => {
           prevField[field.code] = field.value;
@@ -98,11 +111,15 @@ function App() {
       );
       return prevModel;
     }, {});
-  }, []);
-
-  const onValueChange = useCallback((value: string) => {
-    console.log("value", value);
-    setValue(value);
+    return {
+      ...data,
+      SYS: {
+        LOGIN_INFO: {
+          pAddr: "127.0.0.1",
+        },
+      },
+      FORM: { title: "表单标题" },
+    };
   }, []);
 
   const test = () => {
@@ -113,7 +130,21 @@ function App() {
 
       if (type === "f") {
         const [modelCode, fieldCode] = rest.map((t) => t.split(":")[1]);
+
         return `data?.['${modelCode}']?.['${fieldCode}']`;
+      }
+
+      return "";
+    });
+
+    result = result.replace(/\$\{(.+?)\}/g, (_: string, $2: string) => {
+      const [type, ...rest] = $2.split(".");
+
+      if (!!type) {
+        const fieldData = rest.map((t) => t.split(":")[1])?.filter(Boolean);
+        // console.log("modelCode", modelCode, "fieldCode", fieldCode);
+        const filedStr = fieldData.map((i) => '["' + i + '"]').join("?.");
+        return `data?.${type}?.${filedStr}`;
       }
 
       return "";
@@ -121,22 +152,10 @@ function App() {
 
     if (!result) return;
     // result = result.split("\n").pop() || "";
-    console.log("pop", result);
-    if (!result) return;
-    console.log("result---", result);
-    console.log(`function: return ${result}`);
 
-    // const func = new window.Function("func", "data", `return ${result}`);
-    const func = new window.Function(
-      "func",
-      "data",
-      `with(func,data,{
-      ...func,
-      ...data
-      }) {
-      return ${result}
-       }`
-    );
+    if (!result) return;
+
+    console.log(`function: return ${result}`);
     const funcs = localFunctions.reduce((prev: { [k in string]: any }, cur) => {
       if (cur.handle) {
         const handle = new window.Function(`return ${cur.handle}`);
@@ -145,8 +164,25 @@ function App() {
 
       return prev;
     }, {});
+    let runRes;
+    let func;
+    // const func = new window.Function("func", "data", `return ${result}`);
+    try {
+      func = new window.Function(
+        "func",
+        "data",
+        `with(func,data,{
+        ...func,
+        ...data
+        }) {
+        return ${result}
+         }`
+      );
 
-    const runRes = func(funcs, data);
+      runRes = func(funcs, data);
+    } catch (e) {
+      console.error("运行时执行报错:", e);
+    }
 
     setFormatFunctions(`return ${result}`);
     setRunResult(runRes);
@@ -157,10 +193,10 @@ function App() {
     window.open("https://github.com/dbfu/bp-script-editor");
   };
 
-  const completions = useMemo(
-    () => [...localFunctions, ...operations],
-    [localFunctions, operations]
-  );
+  // const completions = useMemo(
+  //   () => [...localFunctions, ...operations],
+  //   [localFunctions, operations]
+  // );
   const runScript = (
     codeStr: string,
     functions: { [k in string]: FunctionType },
@@ -173,7 +209,9 @@ function App() {
 
       if (type === "f") {
         //[[f.用户:user.ID:id]]
-        const [modelCode, fieldCode] = rest.map((t) => t.split(":")[1]);
+        const [modelCode, fieldCode] = rest
+          .map((t) => t.split(":")[1])
+          ?.filter(Boolean);
         return `data?.['${modelCode}']?.['${fieldCode}']`;
       }
 
@@ -193,7 +231,7 @@ function App() {
        }`
     );
     // 运行所有函数
-    const funcs = functions.reduce((prev: { [k in string]: any }, cur) => {
+    const funcs = functions?.reduce((prev: { [k in string]: any }, cur) => {
       if (cur.handle) {
         const handle = new window.Function(`return ${cur.handle}`);
         prev[cur.label] = handle();
@@ -210,13 +248,27 @@ function App() {
     return runRes;
   };
 
-  const editorRef = useRef<ScriptEditorRef>(null);
-
   return (
     <GlobalContext.Provider value={{ editorRef }}>
       <div>
         <div className="h-[48px] flex items-center bg-[rgb(68,75,81)] justify-end px-[20px]">
           <Space>
+            <Button
+              onClick={() => {
+                // editorRef?.current?.insertText("[[f.用户:user.ID:id]]");
+                // editorRef?.current?.insertText("${SYS.CUR_USER}");
+                // editorRef?.current?.insertText(
+                //   "${SYS.LOGIN_INFO:登录信息.ipAddr:地址}"
+                // );
+                editorRef?.current?.insertText(
+                  "${SYS.登录信息:LOGIN_INFO.地址:pAddr}"
+                );
+                // editorRef?.current?.insertText("${FORM.标题:title}");
+              }}
+              type="primary"
+            >
+              插入变量
+            </Button>
             <Button
               onClick={() => {
                 setModelListOpen(true);
@@ -256,10 +308,7 @@ function App() {
             </Button>
             <Button
               onClick={() => {
-                setMode(
-                  (prev) =>
-                    [CodeMode.NAME, CodeMode.CODE].filter((o) => o !== prev)[0]
-                );
+                changeMode?.();
               }}
               type="primary"
             >
@@ -291,7 +340,7 @@ function App() {
           </div>
           <div className="flex-1 w-0">
             <Editor
-              completions={completions}
+              completions={completions || []}
               keywords={keywordsConfig?.keywords}
               keywordsColor={keywordsConfig?.color}
               placeholderThemes={placeholderThemes}
@@ -328,7 +377,7 @@ function App() {
         <Functions
           open={functionsOpen}
           functions={localFunctions}
-          onChange={setLocalFunctions}
+          // onChange={setLocalFunctions}
           onClose={() => {
             setFunctionsOpen(false);
           }}

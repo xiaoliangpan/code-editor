@@ -1,3 +1,4 @@
+import { EditorView } from "@uiw/react-codemirror";
 export interface CompletionsType {
   template: string;
   label: string;
@@ -25,6 +26,7 @@ export interface ScriptEditorRef {
   clearText?: () => void;
   setText?: (text: string) => void;
   getUsedFuncList?: () => FunctionType[];
+  originEditorRef?: EditorView;
 }
 
 export interface HintPathType {
