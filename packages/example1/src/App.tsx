@@ -34,6 +34,66 @@ const placeholderThemes = {
   [placeholderTypes.Field]: CommonPlaceholderThemes.blue,
 };
 
+/*
+移除input注释内容
+@ param input 输入字符串 如：CONCAT(${SYS1|登录信息:a.地址:b.的:c.bb:d})
+@ return 转换后的字符串 如：CONCAT(${SYS1|a.b.c.d})
+*/
+function removeCommentsText(input: string) {
+  return input.replace(/\${[^|]+\|[^}]+}/g, (match) => {
+    // 提取 "|" 之后的部分，格式如: ${SYS|登录信息:a.地址:b.的:c}
+    const parts = match
+      .split("|")[1] // 获取 "|" 后面的部分
+      .replace("}", "") // 去掉 "}"
+      .split(/[:.]/); // 按 ":" 和 "." 分割成数组
+
+    // 过滤掉无效的字段，只保留冒号 ":" 和点 "." 后的部分
+    const filteredParts = parts.filter((part, index) => index % 2 !== 0);
+
+    // 将剩下的部分用 "." 连接
+    const result = match.split("|")[0] + "|" + filteredParts.join(".") + "}";
+    return result;
+  });
+}
+
+// 示例输入
+const input = "CONCAT(${SYS1|登录信息:a.地址:b.的:c.bb:d})";
+
+/*
+将模板字符串 template 转换为字典对象 dict 对应的字符串
+@param template 模板字符串 如：CONCAT(${SYS1|a.b.c.d})
+@param template 模板字符串 如：CONCAT(${SYS1|a.b.c.d})
+@param dict 字典对象  如：{ a: "登录信息", b: "地址", c: "的", d: "bb" }
+@return 转换后的字符串 如：CONCAT(${SYS1|登录信息:a.地址:b.的:c.bb:d})
+*/
+function addCommentsText(template: string, dict: Record<string, string>) {
+  return template.replace(/\${([^|]+)\|([^}]+)}/g, (match, system, fields) => {
+    // 按点 "." 分割字段部分，例如 "a.b.c.d"
+    const fieldList = fields.split(".");
+
+    // 对每个字段进行替换，格式为 "字典值:字段名"
+    const transformedFields = fieldList.map((field: string) => {
+      if (dict[field]) {
+        return `${dict[field]}:${field}`;
+      } else {
+        return `未知:${field}`;
+      }
+      // 如果字典里没有对应的字段，保持原值
+      return field;
+    });
+
+    // 将替换后的字段用 "." 连接，返回新的字符串
+    return `\${${system}|${transformedFields.join(".")}}`;
+  });
+}
+
+// // 示例输入
+// const template = "CONCAT(${SYS1|a.b.c.d}, ${SYS2|e.f.g.h}";
+// const dict = { a: "登录信息", b: "地址", c: "的", d: "bb", e: "恶" };
+
+// const output = transformString(template, dict);
+// console.log(output);
+
 function App() {
   // const [value, setValue] = useState<string>();
   // const [mode, setMode] = useState<CodeMode>(CodeMode.NAME);
@@ -261,7 +321,8 @@ function App() {
                 //   "${SYS.LOGIN_INFO:登录信息.ipAddr:地址}"
                 // );
                 editorRef?.current?.insertText(
-                  "${SYS.登录信息:LOGIN_INFO.地址:pAddr}"
+                  // "${SYS|登录信息:LOGIN_INFO.地址:pAddr}"
+                  "${SYS|登录信息:a.地址:b.的:c}"
                 );
                 // editorRef?.current?.insertText("${FORM.标题:title}");
               }}
