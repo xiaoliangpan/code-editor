@@ -152,7 +152,7 @@ const Editor: ForwardRefRenderFunction<ScriptEditorRef, PropsType> = (
     if (!currentValue) return;
 
     const codeArr = deepClone(currentValue).split("\n");
-
+    console.log("getfunList", functions);
     if (Boolean(isUseFun) && functions?.length > 0) {
       const funcRegexp = new RegExp(
         functions
@@ -191,7 +191,7 @@ const Editor: ForwardRefRenderFunction<ScriptEditorRef, PropsType> = (
         originEditorRef: editorRef,
       };
     },
-    [insertText, clearText, setText, functions]
+    [insertText, clearText, setText, functions, editorRef.current]
   );
 
   const extensionsMemo = useMemo(

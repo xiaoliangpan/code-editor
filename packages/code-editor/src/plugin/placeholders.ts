@@ -24,7 +24,9 @@ export const placeholdersPlugin = (
       if (text) {
         // ${SYS.登录信息:LOGIN_INFO.地址:pAddr}
 
-        const [curFlag, ...texts] = text.split(".");
+        const [curFlag, curTexts] = text.split("|");
+        const texts = curTexts.split(".");
+
         if (curFlag && texts.length) {
           this.text = texts
             .map((t) => t.split(":")[mode === "code" ? 1 : 0])
