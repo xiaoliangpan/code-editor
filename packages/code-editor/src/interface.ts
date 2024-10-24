@@ -1,4 +1,5 @@
-import { EditorView, ReactCodeMirrorRef } from "@uiw/react-codemirror";
+import { ReactCodeMirrorRef } from "@uiw/react-codemirror";
+
 import { MutableRefObject } from "react";
 
 export interface CompletionsType {
