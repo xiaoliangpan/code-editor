@@ -153,7 +153,7 @@ const Editor: ForwardRefRenderFunction<ScriptEditorRef, PropsType> = (
 
     const codeArr = deepClone(currentValue).split("\n");
 
-    if (Boolean(isUseFun) && functions.length > 0) {
+    if (Boolean(isUseFun) && functions?.length > 0) {
       const funcRegexp = new RegExp(
         functions
           .map((data: any) => {
@@ -168,8 +168,9 @@ const Editor: ForwardRefRenderFunction<ScriptEditorRef, PropsType> = (
         let match: any;
         while ((match = funcRegexp.exec(lineStr)) !== null) {
           const variable = match[0];
-          if (lineStr[match["index"] + variable.length] === "(") {
+          if (lineStr[match["index"] + variable?.length] === "(") {
             const funcId = getFuncId(variable, functions);
+
             funcId && usedFuncList.push(funcId);
           }
         }
@@ -190,7 +191,7 @@ const Editor: ForwardRefRenderFunction<ScriptEditorRef, PropsType> = (
         originEditorRef: editorRef,
       };
     },
-    [insertText, clearText, setText]
+    [insertText, clearText, setText, functions]
   );
 
   const extensionsMemo = useMemo(
