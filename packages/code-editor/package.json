@@ -1,6 +1,6 @@
 {
   "name": "@panxl/code-editor",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "keywords": [
     "script",
     "editor",
@@ -54,6 +54,12 @@
   "files": [
     "build"
   ],
+  "resolutions": {
+    "@codemirror/state": "6.4.1"
+  },
+  "overrides": {
+    "@codemirror/state": "6.4.1"
+  },
   "publishConfig": {
     "access": "public"
   }
