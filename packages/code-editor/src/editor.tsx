@@ -73,7 +73,7 @@ const Editor: ForwardRefRenderFunction<ScriptEditorRef, PropsType> = (
     prev[key] = cur;
     return prev;
   }, {});
-
+  console.log("code-editor");
   const insertText = useCallback(
     (text: string, isTemplate?: boolean) => {
       const { view } = editorRef.current!;
@@ -145,6 +145,7 @@ const Editor: ForwardRefRenderFunction<ScriptEditorRef, PropsType> = (
     view.focus();
   }, []);
   const getUsedFuncList = () => {
+    console.log("getfunList---", functions);
     const { view } = editorRef.current;
     if (!view) return;
     const usedFuncList = [];
@@ -152,7 +153,7 @@ const Editor: ForwardRefRenderFunction<ScriptEditorRef, PropsType> = (
     if (!currentValue) return;
 
     const codeArr = deepClone(currentValue).split("\n");
-    console.log("getfunList", functions);
+    console.log("getfunList---", functions);
     if (Boolean(isUseFun) && functions?.length > 0) {
       const funcRegexp = new RegExp(
         functions
