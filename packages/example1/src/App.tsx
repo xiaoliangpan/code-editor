@@ -247,7 +247,7 @@ function App() {
     }
     return runRes;
   };
-
+  console.log("editorRef", editorRef?.current?.getUsedFuncList());
   return (
     <GlobalContext.Provider value={{ editorRef }}>
       <div>

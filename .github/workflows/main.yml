@@ -31,7 +31,7 @@ jobs:
       - name: 修改NPM版本 (自动增加patch)
         run: |
           cd packages/code-editor
-          npm version patch  # 你可以将 patch 改为 major 或 minor
+          npm version patch  #  你可以将 patch 改为 major 或 minor
       - name: 提交未提交的更改
         run: |
           git config --global user.email "panxlmail@qq.com"  # 设置你的GitHub邮箱
@@ -51,7 +51,7 @@ jobs:
         id: version
         uses: ashley-taylor/read-json-property-action@v1.0
         with:
-          path: ./package.json
+          path: ./packages/code-editor/package.json
           property: version
 
       - name: 创建GitHub Release
