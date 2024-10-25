@@ -6,7 +6,7 @@ import {
   HintPathType,
   PlaceholderThemesType,
 } from "./interface";
-
+import { javascript } from "@codemirror/lang-javascript";
 import { baseTheme } from "./plugin/base-theme";
 import { customCompletions } from "./plugin/custom-completions";
 import { functionPlugin } from "./plugin/functions";
@@ -58,6 +58,7 @@ export const extensions = ({
         hintPaths?.length ? hintPlugin(hintPaths) : null,
       ].filter((o) => !!o),
     }),
+    javascript(),
     functionPlugin(functions),
     highlightActiveLine(),
   ].filter((o) => !!o);

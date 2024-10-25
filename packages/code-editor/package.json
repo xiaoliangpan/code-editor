@@ -1,6 +1,6 @@
 {
   "name": "@panxl/code-editor",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "keywords": [
     "script",
     "editor",
@@ -46,7 +46,7 @@
     "@codemirror/state": "6.4.1",
     "@codemirror/view": "6.9.2",
     "@uiw/codemirror-theme-github": "4.19.9",
-    "@uiw/react-codemirror": "4.19.9"
+    "@uiw/react-codemirror": "4.23.6"
   },
   "peerDependencies": {
     "react": "^18.2.0",
