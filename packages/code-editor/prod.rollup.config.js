@@ -19,10 +19,12 @@ export default defineConfig([{
           react: 'React',          // 告诉 Rollup react 对应的全局变量名
           'react-dom': 'ReactDOM'  // 如果用到 react-dom，也需要指定
         },
+        exports: 'named',
       },
       {
         format: 'cjs',
-        file: './build/bundle.cjs.js'
+        file: './build/bundle.cjs.js',
+        exports: 'named',
       },
       {
         format: "es",
