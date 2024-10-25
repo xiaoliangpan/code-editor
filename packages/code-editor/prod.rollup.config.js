@@ -13,10 +13,11 @@ export default defineConfig([{
       {
         format: 'umd',
         name: 'bpScriptEditor',
-        file: './build/bundle.umd.js'
-      }, {
-        format: 'amd',
-        file: './build/bundle.amd.js'
+        file: './build/bundle.umd.js',
+        globals: {
+          react: 'React',          // 告诉 Rollup react 对应的全局变量名
+          'react-dom': 'ReactDOM'  // 如果用到 react-dom，也需要指定
+        },
       },
       {
         format: 'cjs',
@@ -29,13 +30,13 @@ export default defineConfig([{
     ],
 
   plugins: [
-    terser(),
-    resolve(),
-    commonjs(),
-    typescript(),
     clear({
       targets: ['build']
     }),
+    typescript(),
+    resolve(),
+    commonjs(),
+    terser(),
   ],
   external: ['react', 'react-dom']
 },

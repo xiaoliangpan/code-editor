@@ -1,11 +1,11 @@
-import { ViewUpdate } from "@codemirror/view";
-import { DecorationSet } from "@codemirror/view";
 import {
   Decoration,
   ViewPlugin,
   MatchDecorator,
   EditorView,
   WidgetType,
+  DecorationSet,
+  ViewUpdate,
 } from "@codemirror/view";
 import { cssConfig } from "../config";
 import { varRegexp } from "../config/regexp";

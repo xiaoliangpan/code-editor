@@ -21,8 +21,6 @@
   "author": "243506597@qq.com",
   "license": "ISC",
   "dependencies": {
-    "@codemirror/autocomplete": "^6.4.2",
-    "@uiw/codemirror-theme-github": "^4.19.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "rollup": "^3.19.1"

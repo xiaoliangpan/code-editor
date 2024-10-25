@@ -1,7 +1,12 @@
-import { DecorationSet } from "@codemirror/view";
-import { ViewUpdate } from "@codemirror/view";
-import { EditorView, WidgetType } from "@codemirror/view";
-import { Decoration, ViewPlugin, MatchDecorator } from "@codemirror/view";
+import {
+  Decoration,
+  ViewPlugin,
+  MatchDecorator,
+  DecorationSet,
+  ViewUpdate,
+  EditorView,
+  WidgetType,
+} from "@codemirror/view";
 import { FunctionType } from "../interface";
 import { cssConfig } from "../config";
 import { funRegexp } from "../config/regexp";

@@ -1,4 +1,4 @@
-export { default } from "./editor";
+export { default as Editor } from "./editor";
 export { CommonPlaceholderThemes } from "./common-placeholder-theme";
 export {
   FunctionType,
