@@ -40,12 +40,12 @@
   "module": "build/bundle.es.js",
   "typings": "build/index.d.ts",
   "dependencies": {
-    "@codemirror/autocomplete": "^6.4.2",
-    "@codemirror/lang-javascript": "^6.1.4",
-    "@codemirror/state": "^6.2.0",
-    "@codemirror/view": "^6.9.2",
-    "@uiw/codemirror-theme-github": "^4.19.9",
-    "@uiw/react-codemirror": "^4.19.9"
+    "@codemirror/autocomplete": "6.4.2",
+    "@codemirror/lang-javascript": "6.1.4",
+    "@codemirror/state": "6.2.0",
+    "@codemirror/view": "6.9.2",
+    "@uiw/codemirror-theme-github": "4.19.9",
+    "@uiw/react-codemirror": "4.19.9"
   },
   "peerDependencies": {
     "react": "^18.2.0",
@@ -55,10 +55,10 @@
     "build"
   ],
   "resolutions": {
-    "@codemirror/state": "6.4.1"
+    "@codemirror/state": "6.2.0"
   },
   "overrides": {
-    "@codemirror/state": "6.4.1"
+    "@codemirror/state": "6.2.0"
   },
   "publishConfig": {
     "access": "public"
