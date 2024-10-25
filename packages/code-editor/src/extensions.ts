@@ -58,7 +58,7 @@ export const extensions = ({
         hintPaths?.length ? hintPlugin(hintPaths) : null,
       ].filter((o) => !!o),
     }),
-    javascript(),
+    // javascript(),
     functionPlugin(functions),
     highlightActiveLine(),
   ].filter((o) => !!o);

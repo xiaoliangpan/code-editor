@@ -22,11 +22,11 @@ export const placeholdersPlugin = (
     constructor(text: string) {
       super();
       if (text) {
+        console.log("text--", text);
         // ${SYS.登录信息:LOGIN_INFO.地址:pAddr}
-
         const [curFlag, curTexts] = text.split("|");
         const texts = curTexts.split(".");
-
+        console.log("curFlag=--", curFlag);
         if (curFlag && texts.length) {
           this.text = texts
             .map((t) => t.split(":")[mode === "code" ? 1 : 0])
@@ -37,6 +37,7 @@ export const placeholdersPlugin = (
     }
 
     eq(other: PlaceholderWidget) {
+      console.log("var---", this.text, other.text);
       return this.text == other.text;
     }
 
@@ -74,6 +75,7 @@ export const placeholdersPlugin = (
     // regexp: /\[\[(.+?)\]\]/g,
     regexp: varRegexp,
     decoration: (match) => {
+      console.log("match[1]", match[1]);
       return Decoration.replace({
         widget: new PlaceholderWidget(match[1]),
       });
