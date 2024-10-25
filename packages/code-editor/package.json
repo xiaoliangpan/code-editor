@@ -1,6 +1,6 @@
 {
   "name": "@panxl/code-editor",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "keywords": [
     "script",
     "editor",
@@ -42,7 +42,7 @@
   "dependencies": {
     "@codemirror/autocomplete": "^6.4.2",
     "@codemirror/lang-javascript": "^6.1.4",
-    "@codemirror/state": "^6.2.0",
+    "@codemirror/state": "^6.4.0",
     "@codemirror/view": "^6.9.2",
     "@uiw/codemirror-theme-github": "^4.19.9",
     "@uiw/react-codemirror": "^4.19.9"
