@@ -5,6 +5,7 @@ import { terser } from 'rollup-plugin-terser'
 import dts from 'rollup-plugin-dts';
 import { defineConfig } from 'rollup'
 import clear from 'rollup-plugin-clear';
+import alias from '@rollup/plugin-alias';
 
 export default defineConfig([{
   input: './src/index.ts',
@@ -30,6 +31,11 @@ export default defineConfig([{
     ],
 
   plugins: [
+    // alias({
+    //   entries: [
+    //     { find: '@codemirror/state', replacement: require.resolve('@codemirror/state') },
+    //   ],
+    // }),
     clear({
       targets: ['build']
     }),
