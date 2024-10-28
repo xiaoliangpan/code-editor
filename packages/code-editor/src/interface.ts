@@ -32,7 +32,7 @@ export interface ScriptEditorRef {
   originEditorRef?: MutableRefObject<ReactCodeMirrorRef>;
   insertVar: (text: string) => void;
   insertFun: (text: string) => void;
-  originalText: () => void;
+  originalText: () => string;
 }
 
 export interface HintPathType {

@@ -13,9 +13,9 @@ export function insertInputIntoFunction(code, pos, input) {
   }
   function hasCommaAfter(code: string, position: number) {
     let index = position + 1; // 从目标位置的前一个字符开始检查
-
+    console.log("hasCommaAfter", code[position], "index", code[index]);
     // 向后遍历，直到找到一个非空字符或到达字符串开头
-    while (index >= 0 && code[index] === " ") {
+    while (index < code.length - 1 && code[index] === " ") {
       index++; // 跳过空格
     }
 
@@ -52,30 +52,32 @@ export function insertInputIntoFunction(code, pos, input) {
       for (let i = 0; i < args.length; i++) {
         const arg = args[i];
         const argEnd = cumulativeIndex + arg.length;
-        // console.log(
-        //   "match-3",
-        //   "args",
-        //   args,
-        //   "pos",
-        //   pos,
-        //   "cumulativeIndex",
-        //   cumulativeIndex,
-        //   "argEnd",
-        //   argEnd
-        // );
+        console.log(
+          "match-3",
+          "i,",
+          i,
+          "args",
+          args,
+          "pos",
+          pos,
+          "cumulativeIndex",
+          cumulativeIndex,
+          "argEnd",
+          argEnd
+        );
         // 如果光标在当前参数之前，表示在括号中的第一个位置
         if (pos < cumulativeIndex && code[cumulativeIndex] !== ")") {
           insertCommaBefore = false; // 没有前面的参数，不需要逗号
           insertCommaAfter = true; // 但后面有参数，需要插入逗号
           foundInsertPosition = true;
-          // console.log("match-1");
+          console.log("match-1");
           break;
         }
         // 如果光标在当前参数之后
         else if (pos > argEnd) {
           // 在参数之后插入，前面有参数，可能需要插入逗号
           insertCommaBefore = true;
-          // console.log("match-2");
+          console.log("match-2");
         }
 
         // 更新累积索引，移动到下一个参数
@@ -87,7 +89,7 @@ export function insertInputIntoFunction(code, pos, input) {
       const beforeChar = hasCommaBefore(code, pos);
 
       const afterChar = hasCommaAfter(code, pos);
-
+      console.log("beforechar", beforeChar, "afterchar", afterChar);
       // 如果插入点前已经有逗号，则不需要再插入逗号
       if (beforeChar) {
         insertCommaBefore = false;
