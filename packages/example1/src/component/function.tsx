@@ -17,8 +17,7 @@ const Function: FC<PropsTypes> = ({ functions }) => {
           <div
             onClick={() => {
               if (editorRef?.current?.insertText) {
-                console.log("item.template", item.template);
-                editorRef.current.insertText(`${item.template}`, true);
+                editorRef.current.insertFun(`${item.label}`);
               }
             }}
             className="px-[12px] py-[4px] hover:(bg-[rgba(0,0,0,0.04)]) cursor-pointer rounded-md"

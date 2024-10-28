@@ -307,7 +307,7 @@ function App() {
     }
     return runRes;
   };
-  console.log("editorRef", editorRef?.current?.getUsedFuncList());
+
   return (
     <GlobalContext.Provider value={{ editorRef }}>
       <div>
@@ -320,9 +320,10 @@ function App() {
                 // editorRef?.current?.insertText(
                 //   "${SYS.LOGIN_INFO:登录信息.ipAddr:地址}"
                 // );
-                editorRef?.current?.insertText(
+                editorRef?.current?.insertVar(
                   // "${SYS|登录信息:LOGIN_INFO.地址:pAddr}"
-                  "${SYS|登录信息:a.地址:b.的:c}"
+                  "${SYS|登录信息:a.地址:b}"
+                  // "${SYS.LOGIN_INFO:登录信息.ipAddr:地址}"
                 );
                 // editorRef?.current?.insertText("${FORM.标题:title}");
               }}
@@ -353,6 +354,15 @@ function App() {
               type="primary"
             >
               定义关键字
+            </Button>
+            <Button
+              onClick={() => {
+                editorRef?.current?.originalText();
+                console.log(editorRef?.current?.originalText());
+              }}
+              type="primary"
+            >
+              复制
             </Button>
             <Button onClick={test} type="primary">
               测试
