@@ -22,11 +22,10 @@ export const placeholdersPlugin = (
     constructor(text: string) {
       super();
       if (text) {
-        console.log("text--", text);
         // ${SYS.登录信息:LOGIN_INFO.地址:pAddr}
         const [curFlag, curTexts] = text.split("|");
         const texts = curTexts.split(".");
-        console.log("curFlag=--", curFlag);
+
         if (curFlag && texts.length) {
           this.text = texts
             .map((t) => t.split(":")[mode === "code" ? 1 : 0])
@@ -37,7 +36,6 @@ export const placeholdersPlugin = (
     }
 
     eq(other: PlaceholderWidget) {
-      console.log("var---", this.text, other.text);
       return this.text == other.text;
     }
 
@@ -48,9 +46,9 @@ export const placeholdersPlugin = (
       const { backgroudColor, borderColor, textColor } = themes?.[
         this?.curFlag || "f"
       ] || {
-        backgroudColor: "#f5f5f5",
-        borderColor: "#e0e0e0",
-        textColor: "red",
+        backgroudColor: "rgb(201, 223, 252)",
+        borderColor: "transparent",
+        textColor: "rgb(2, 107, 225)",
       };
       elt.style.cssText = `
       border: 1px solid ${borderColor};
@@ -58,6 +56,7 @@ export const placeholdersPlugin = (
       line-height: 20px;
       background: ${backgroudColor};
       color: ${textColor};
+      border-radius: 2px;
       font-size: 12px;
       padding: 2px 7px;
       user-select: none;
@@ -75,7 +74,7 @@ export const placeholdersPlugin = (
     // regexp: /\[\[(.+?)\]\]/g,
     regexp: varRegexp,
     decoration: (match) => {
-      console.log("match[1]", match[1]);
+      // console.log("match[1]", match[1]);
       return Decoration.replace({
         widget: new PlaceholderWidget(match[1]),
       });

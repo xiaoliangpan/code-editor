@@ -12,6 +12,7 @@ import ReactCodeMirror, { ReactCodeMirrorRef } from "@uiw/react-codemirror";
 import { snippet } from "@codemirror/autocomplete";
 import { Extension } from "@codemirror/state";
 import { deepClone, getFuncId } from "./utils";
+import { insertInputIntoFunction, removeCommentsText } from "./utils/var";
 import { extensions } from "./extensions";
 import {
   CompletionsType,
@@ -73,7 +74,7 @@ const Editor: ForwardRefRenderFunction<ScriptEditorRef, PropsType> = (
     prev[key] = cur;
     return prev;
   }, {});
-  console.log("code-editor");
+
   const insertText = useCallback(
     (text: string, isTemplate?: boolean) => {
       const { view } = editorRef.current!;
@@ -145,7 +146,6 @@ const Editor: ForwardRefRenderFunction<ScriptEditorRef, PropsType> = (
     view.focus();
   }, []);
   const getUsedFuncList = () => {
-    console.log("getfunList---", functions);
     const { view } = editorRef.current;
     if (!view) return;
     const usedFuncList = [];
@@ -153,7 +153,7 @@ const Editor: ForwardRefRenderFunction<ScriptEditorRef, PropsType> = (
     if (!currentValue) return;
 
     const codeArr = deepClone(currentValue).split("\n");
-    console.log("getfunList---", functions);
+
     if (Boolean(isUseFun) && functions?.length > 0) {
       const funcRegexp = new RegExp(
         functions
@@ -179,7 +179,55 @@ const Editor: ForwardRefRenderFunction<ScriptEditorRef, PropsType> = (
     }
     return usedFuncList;
   };
+  // 插入函数自动补全（）
+  const insertFun = (input: string) => {
+    const editorView = editorRef?.current?.view;
+    // eslint-disable-next-line no-unsafe-optional-chaining
+    const { from, to } = editorView?.state?.selection?.main;
 
+    const text = `${input}()`;
+    const transaction = editorView?.state?.update?.({
+      changes: {
+        from,
+        to,
+        insert: text,
+      },
+      selection: {
+        anchor: from + text.length - 1,
+      },
+    });
+    editorView?.dispatch(transaction);
+    editorView?.focus?.();
+  };
+  // 插入变量自动补全 ','
+  const insertVar = (input: string) => {
+    const editorView = editorRef?.current?.view;
+
+    // 获取当前光标位置和编辑器内容
+    const pos = editorView.state.selection.main.head; // 获取光标位置
+    const value = editorView.state.doc.toString(); // 获取当前编辑器内容
+
+    const newInput = insertInputIntoFunction(value, pos, input);
+
+    // 更新编辑器内容
+    editorView.dispatch({
+      changes: {
+        from: pos, // 从光标位置插入
+        to: pos, // 不替换任何内容，仅插入
+        insert: newInput, // 插入的内容
+      },
+      selection: { anchor: pos + newInput.length }, // 更新光标位置
+    });
+    // 让编辑器聚集
+    editorView.focus();
+  };
+  // 原始内容（去除注释）
+  const originalText = () => {
+    const { view } = editorRef.current;
+    if (!view) return;
+    const currentValue = view?.state?.doc.toString() || "";
+    return removeCommentsText(currentValue);
+  };
   useImperativeHandle(
     ref,
     () => {
@@ -188,11 +236,22 @@ const Editor: ForwardRefRenderFunction<ScriptEditorRef, PropsType> = (
         clearText,
         setText,
         getUsedFuncList,
-
+        insertFun,
+        insertVar,
+        originalText,
         originEditorRef: editorRef,
       };
     },
-    [insertText, clearText, setText, functions, editorRef.current]
+    [
+      insertText,
+      clearText,
+      setText,
+      functions,
+      editorRef.current,
+      insertFun,
+      insertVar,
+      originalText,
+    ]
   );
 
   const extensionsMemo = useMemo(

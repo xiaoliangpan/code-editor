@@ -25,11 +25,14 @@ export interface CommonPlaceholderTheme {
 }
 
 export interface ScriptEditorRef {
-  insertText?: (text: string, isTemplate: boolean) => void;
+  insertText: (text: string, isTemplate: boolean) => void;
   clearText?: () => void;
   setText?: (text: string) => void;
   getUsedFuncList?: () => FunctionType[];
   originEditorRef?: MutableRefObject<ReactCodeMirrorRef>;
+  insertVar: (text: string) => void;
+  insertFun: (text: string) => void;
+  originalText: () => void;
 }
 
 export interface HintPathType {

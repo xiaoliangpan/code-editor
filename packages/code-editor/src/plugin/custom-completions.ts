@@ -9,7 +9,7 @@ export function customCompletions(completions: CompletionsType[]) {
       from: word.from,
       options:
         completions?.map((item) =>
-          snippetCompletion(item?.template || "", {
+          snippetCompletion(item?.label + "()" || "", {
             label: item.label,
             detail: item.detail,
             type: item.type,

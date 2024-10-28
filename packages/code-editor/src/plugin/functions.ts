@@ -29,7 +29,7 @@ export const functionPlugin = (functions: FunctionType[]) => {
       elt.className = cssConfig?.funcNameClass;
       elt.setAttribute("data-func-name", this.text);
       elt.style.cssText = `
-      color: #d73a49;
+      color: rgb(0, 168, 112);
       font-size: 14px;
       `;
       elt.textContent = this.text;
