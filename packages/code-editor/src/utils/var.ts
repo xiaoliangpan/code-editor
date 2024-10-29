@@ -52,32 +52,19 @@ export function insertInputIntoFunction(code, pos, input) {
       for (let i = 0; i < args.length; i++) {
         const arg = args[i];
         const argEnd = cumulativeIndex + arg.length;
-        console.log(
-          "match-3",
-          "i,",
-          i,
-          "args",
-          args,
-          "pos",
-          pos,
-          "cumulativeIndex",
-          cumulativeIndex,
-          "argEnd",
-          argEnd
-        );
+
         // 如果光标在当前参数之前，表示在括号中的第一个位置
         if (pos < cumulativeIndex && code[cumulativeIndex] !== ")") {
           insertCommaBefore = false; // 没有前面的参数，不需要逗号
           insertCommaAfter = true; // 但后面有参数，需要插入逗号
           foundInsertPosition = true;
-          console.log("match-1");
+
           break;
         }
         // 如果光标在当前参数之后
         else if (pos > argEnd) {
           // 在参数之后插入，前面有参数，可能需要插入逗号
           insertCommaBefore = true;
-          console.log("match-2");
         }
 
         // 更新累积索引，移动到下一个参数
@@ -158,6 +145,7 @@ export function insertInputIntoFunction(code, pos, input) {
 @ return 转换后的字符串 如：CONCAT(${SYS1|a.b.c.d})
 */
 export function removeCommentsText(input: string) {
+  if (input.indexOf(":") === -1) return input;
   return input.replace(/\${[^|]+\|[^}]+}/g, (match) => {
     // 提取 "|" 之后的部分，格式如: ${SYS|登录信息:a.地址:b.的:c}
     const parts = match
@@ -172,4 +160,47 @@ export function removeCommentsText(input: string) {
     const result = match.split("|")[0] + "|" + filteredParts.join(".") + "}";
     return result;
   });
+}
+
+/**
+ * 格式化注释内容
+ * @param input SYS|a.b.c
+ * @param keyToNameMap {a:登录信息,b:地址,c:的}
+ * @description 格式化注释内容，将 SYS|a.b.c 格式转换为 SYS|登录信息:a.地址:b.的:c
+ * @returns  SYS|登录信息:a.地址:b.的:c
+ */
+export function formatCommentsText(
+  input: string,
+  keyToNameMap: Record<string, string>
+) {
+  // 匹配 ${任意字符串|...} 中间的内容
+  return input.replace(
+    /([a-zA-Z0-9]+)\|([a-zA-Z0-9]+(\.[a-zA-Z0-9]+)+)/g,
+    (match, system, group) => {
+      // 将 'curOrg.orgId' 拆分为 ['curOrg', 'orgId']
+
+      const keys = group.split(".");
+
+      // 用字典 b 进行转换
+      const formattedKeys = keys.map((key) => {
+        if (keyToNameMap?.[key]) {
+          return `${keyToNameMap[key]}:${key}`; // 构造 'value:key' 格式
+        }
+        console.log(`${key} 未在字典中`);
+        return `未解析:${key}`; // 如果字典中没有该键，则保持不变
+      });
+
+      // 将转换后的内容重新组合并插入到 ${任意字符串|...} 中
+      return `${system}|${formattedKeys.join(".")}`;
+    }
+  );
+}
+/**
+ * 判断是 "${SYS.登录信息:LOGIN_INFO.地址:pAddr}" 这种格式数据
+ * @param str
+ * @returns  boolean
+ */
+export function isValidFormat(str) {
+  // 正则表达式匹配格式 ${前缀.键值对}
+  return str?.indexOf(":") !== -1 && str.indexOf("|") !== -1;
 }

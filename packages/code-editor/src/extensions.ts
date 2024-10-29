@@ -26,6 +26,7 @@ export const extensions = ({
   hintPaths,
   onFocusFunc,
   functionsMap,
+  varKeyToNameMap,
 }: {
   keywords?: string[];
   completions: CompletionsType[];
@@ -38,6 +39,7 @@ export const extensions = ({
   readonly?: boolean;
   onFocusFunc?: (funcName: string) => void;
   functionsMap: Record<string, FunctionType>;
+  varKeyToNameMap: Record<string, string>;
 }): any[] => {
   return [
     EditorView.domEventHandlers({
@@ -50,7 +52,7 @@ export const extensions = ({
       ? keywordsPlugin(keywords, keywordsColor, keywordsClassName)
       : null,
     baseTheme,
-    placeholdersPlugin(placeholderThemes, mode),
+    placeholdersPlugin(placeholderThemes, mode, varKeyToNameMap),
     EditorView.lineWrapping,
     autocompletion({
       override: [

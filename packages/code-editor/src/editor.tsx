@@ -43,6 +43,8 @@ interface PropsType {
   onFocusFunc?: (funcName: string) => void;
   // 是否使用函数功能
   isUseFun: boolean;
+  // 变量keyToName 映射
+  varKeyToNameMap: Record<string, string>;
 }
 
 const Editor: ForwardRefRenderFunction<ScriptEditorRef, PropsType> = (
@@ -64,6 +66,7 @@ const Editor: ForwardRefRenderFunction<ScriptEditorRef, PropsType> = (
     readonly,
     onFocusFunc,
     isUseFun = true,
+    varKeyToNameMap = {},
   },
   ref
 ) => {
@@ -226,6 +229,7 @@ const Editor: ForwardRefRenderFunction<ScriptEditorRef, PropsType> = (
     const { view } = editorRef.current;
     if (!view) return;
     const currentValue = view?.state?.doc.toString() || "";
+
     return removeCommentsText(currentValue);
   };
   useImperativeHandle(
@@ -268,6 +272,7 @@ const Editor: ForwardRefRenderFunction<ScriptEditorRef, PropsType> = (
         readonly,
         onFocusFunc,
         functionsMap: functionsMapRef.current,
+        varKeyToNameMap,
       }),
       ...(extensionsProps || []),
     ],
@@ -283,6 +288,7 @@ const Editor: ForwardRefRenderFunction<ScriptEditorRef, PropsType> = (
       extensionsProps,
       onFocusFunc,
       functionsMapRef.current,
+      varKeyToNameMap,
     ]
   );
 

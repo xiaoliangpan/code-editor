@@ -10,10 +10,12 @@ import {
 import { cssConfig } from "../config";
 import { varRegexp } from "../config/regexp";
 import { PlaceholderThemesType } from "../interface";
+import { formatCommentsText, isValidFormat } from "../utils/var";
 
 export const placeholdersPlugin = (
   themes: PlaceholderThemesType,
-  mode: string = "name"
+  mode: string = "name",
+  varKeyToNameMap: Record<string, string> = {}
 ) => {
   class PlaceholderWidget extends WidgetType {
     curFlag: string;
@@ -21,7 +23,7 @@ export const placeholdersPlugin = (
 
     constructor(text: string) {
       super();
-      if (text) {
+      const handleText = (text) => {
         // ${SYS.登录信息:LOGIN_INFO.地址:pAddr}
         const [curFlag, curTexts] = text.split("|");
         const texts = curTexts.split(".");
@@ -31,6 +33,16 @@ export const placeholdersPlugin = (
             .map((t) => t.split(":")[mode === "code" ? 1 : 0])
             .join(".");
           this.curFlag = curFlag;
+        }
+      };
+
+      if (text) {
+        if (isValidFormat(text)) {
+          handleText(text);
+        } else {
+          const newText = formatCommentsText(text, varKeyToNameMap);
+
+          handleText(newText);
         }
       }
     }
