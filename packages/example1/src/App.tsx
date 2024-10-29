@@ -8,7 +8,6 @@ import Editor, {
   ScriptEditorRef,
   CodeMode,
 } from "@panxl/code-editor";
-import type {} from "@panxl/code-editor";
 
 import Function from "./component/function";
 import ModelField from "./component/model-field";
@@ -24,6 +23,7 @@ import Functions from "./pages/functions";
 import RunResult from "./pages/result";
 import { hintPaths } from "./data/hint";
 import { useCodeEditor } from "./hooks/use-code-editor";
+import { varKeyToNameMap } from "./config";
 
 const placeholderTypes = {
   // 这里各种变量类型
@@ -322,8 +322,10 @@ function App() {
                 // );
                 editorRef?.current?.insertVar(
                   // "${SYS|登录信息:LOGIN_INFO.地址:pAddr}"
-                  "${SYS|登录信息:a.地址:b}"
-                  // "${SYS.LOGIN_INFO:登录信息.ipAddr:地址}"
+                  // "${SYS|登录信息:a.地址:b}"
+
+                  // "${SYSTEM|curOrg.orgId}"
+                  "${CONTEXT|vxfnec} "
                 );
                 // editorRef?.current?.insertText("${FORM.标题:title}");
               }}
@@ -426,6 +428,7 @@ function App() {
               onFocusFunc={(data) => {
                 console.log("onFocusFunc--", data);
               }}
+              varKeyToNameMap={varKeyToNameMap}
             />
           </div>
         </div>
