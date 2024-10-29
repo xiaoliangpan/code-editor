@@ -24,7 +24,7 @@ export const placeholdersPlugin = (
     constructor(text: string) {
       super();
       const handleText = (text) => {
-        // ${SYS.登录信息:LOGIN_INFO.地址:pAddr}
+        // SYS|登录信息:LOGIN_INFO.地址:pAddr
         const [curFlag, curTexts] = text.split("|");
         const texts = curTexts.split(".");
 
@@ -33,6 +33,10 @@ export const placeholdersPlugin = (
             .map((t) => t.split(":")[mode === "code" ? 1 : 0])
             .join(".");
           this.curFlag = curFlag;
+        } else if (curFlag) {
+          console.log("else", curFlag, "curtext", curTexts);
+          this.curFlag = curFlag;
+          this.text = `${varKeyToNameMap?.[curTexts]}: ${curTexts}`;
         }
       };
 
@@ -70,8 +74,9 @@ export const placeholdersPlugin = (
       color: ${textColor};
       border-radius: 2px;
       font-size: 12px;
-      padding: 2px 7px;
+      padding: 1px 3px;
       user-select: none;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
       `;
       elt.className = cssConfig?.placeholderClass;
       elt.textContent = this.text;
@@ -83,7 +88,6 @@ export const placeholdersPlugin = (
   }
 
   const placeholderMatcher = new MatchDecorator({
-    // regexp: /\[\[(.+?)\]\]/g,
     regexp: varRegexp,
     decoration: (match) => {
       // console.log("match[1]", match[1]);

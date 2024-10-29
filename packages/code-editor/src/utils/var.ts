@@ -107,11 +107,11 @@ export function insertInputIntoFunction(code, pos, input) {
       if (insertCommaBefore && insertCommaAfter) {
         // 前后都需要逗号，插入 `, input,`
         // updatedCode = before + `, ${input}, ` + after;
-        updatedCode = `, ${input},`;
+        updatedCode = `,${input},`;
       } else if (insertCommaBefore) {
         // 只在前面插入逗号，插入 `, input`
         // updatedCode = before + `, ${input}` + after;
-        updatedCode = `, ${input}`;
+        updatedCode = `,${input}`;
       } else if (insertCommaAfter) {
         // 只在后面插入逗号，插入 `input,`
         // updatedCode = before + `${input}, ` + after;
@@ -173,12 +173,13 @@ export function formatCommentsText(
   input: string,
   keyToNameMap: Record<string, string>
 ) {
+  console.log("aaaa", input);
   // 匹配 ${任意字符串|...} 中间的内容
   return input.replace(
-    /([a-zA-Z0-9]+)\|([a-zA-Z0-9]+(\.[a-zA-Z0-9]+)+)/g,
+    /([a-zA-Z0-9]+)\|([a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*)/g,
     (match, system, group) => {
       // 将 'curOrg.orgId' 拆分为 ['curOrg', 'orgId']
-
+      console.log("group", group);
       const keys = group.split(".");
 
       // 用字典 b 进行转换

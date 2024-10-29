@@ -229,7 +229,7 @@ const Editor: ForwardRefRenderFunction<ScriptEditorRef, PropsType> = (
     const { view } = editorRef.current;
     if (!view) return;
     const currentValue = view?.state?.doc.toString() || "";
-
+    console.log("originalText", removeCommentsText(currentValue));
     return removeCommentsText(currentValue);
   };
   useImperativeHandle(
