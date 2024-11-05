@@ -307,7 +307,7 @@ function App() {
     }
     return runRes;
   };
-
+  console.log("value====", value);
   return (
     <GlobalContext.Provider value={{ editorRef }}>
       <div>
@@ -325,7 +325,8 @@ function App() {
                   // "${SYS|登录信息:a.地址:b}"
 
                   // "${SYSTEM|curOrg.orgId}"
-                  "${CONTEXT|vxfnec} "
+                  // "${CONTEXT|vxfnec} "
+                  "${SYSTEM|curOrg.orgCode}"
                 );
                 // editorRef?.current?.insertText("${FORM.标题:title}");
               }}
